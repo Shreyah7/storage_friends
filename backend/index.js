@@ -7,7 +7,7 @@ const cors = require("cors");
 var db = mysql.createConnection({
   host:'localhost',
   user: 'root',
-  password:'AYH7sp=!',
+  password:'Shivini123#$',
   database:'storage_friends',
 })
 
@@ -16,16 +16,20 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.get("/api/get", (require, response) => {
-    const sqlSelect = "SELECT * FROM Users";
+    console.log("in get");
+
+    const sqlSelect = "SELECT * FROM Users limit 3";
     db.query(sqlSelect, (err, result) => {
-        response.send(result);
-        //console.log(result);
+        //response.send(result);
+        console.log(result);
     });
 });
 
-app.get("/api/get/:Email", (require, response) => {
-    const Email = require.params.Email;
-    console.log(Email)
+app.post("/api/post/email", (require, response) => {
+
+    const Email = require.body.tempEmail;
+    console.log('in email endpoint');
+    console.log("email: " + Email);
 
     const sqlSelect = "SELECT * FROM Users WHERE Email = ?";
     db.query(sqlSelect, Email, (err, result) => {
@@ -34,8 +38,29 @@ app.get("/api/get/:Email", (require, response) => {
     })
 });
 
+//login
+app.post("/api/get/user", (require, response) => {
+
+    console.log('inside login')
+    console.log(require.body)
+
+    const Email = require.body.loginEmail;
+    const Password = require.body.Password;
+    console.log("email: " + Email);
+    console.log("password: " + Password);
+    
+    
+
+    const sqlSelect = "SELECT * FROM Users WHERE Email = ? and Password = ?";
+    db.query(sqlSelect, [Email, Password], (err, result) => {
+        response.send(result);
+        console.log(result);
+    })
+});
+
 app.post("/api/insert", (require, response) => {
     //const UserId = require.body.UserId;
+    console.log(require.body);
     const FirstName = require.body.FirstName;
     const LastName = require.body.LastName;
     const Email = require.body.Email;
@@ -46,6 +71,7 @@ app.post("/api/insert", (require, response) => {
     const sqlInsert = "INSERT INTO Users (FirstName, LastName, Email, Phone, UserAddress, Password) VALUES (?,?,?,?,?,?)";
     db.query(sqlInsert, [FirstName, LastName, Email, Phone, UserAddress, Password], (err, result) => {
         //console.log(err);
+        console.log("inside db")
         console.log(result);
     })
 });
@@ -53,12 +79,12 @@ app.post("/api/insert", (require, response) => {
 app.delete("/api/delete/:Email", (require, response) => {
     const Email = require.params.Email;
     //const Password = require.body.Password;
-    console.log(Email)
+    //console.log(Email)
     //console.log(Password)
 
     const sqlDelete = "DELETE FROM Users WHERE Email = ?";
     db.query(sqlDelete, Email, (err, result) => {
-        console.log(result);
+        //console.log(result);
     })
 
     /*
@@ -66,7 +92,6 @@ app.delete("/api/delete/:Email", (require, response) => {
     db.query(sqlDelete, [Email, Password], (err, result) => {
         console.log(result);
     })
-
     <label> Enter Password </label>
             <input type="text" name="delPassword" onChange={(e) => {
               setPassword(e.target.value)
@@ -78,13 +103,13 @@ app.put("/api/update/", (require, response) => {
     const Email = require.body.Email;
     const newPassword = require.body.newPassword;
     const oldPassword = require.body.oldPassword;
-    console.log(Email)
-    console.log(newPassword)
-    console.log(oldPassword)
+    //console.log(Email)
+    //console.log(newPassword)
+    //console.log(oldPassword)
 
     const sqlUpdate = "UPDATE Users SET Password = ? where Email = ? and Password = ?";
     db.query(sqlUpdate, [newPassword, Email, oldPassword], (err, result) => {
-        console.log(result);
+        //console.log(result);
     })
 });
 
