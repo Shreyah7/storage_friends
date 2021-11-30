@@ -71,6 +71,8 @@ app.post("/api/get/book", (require, response) => {
     const sqlSelect = "SELECT Rent FROM Listings WHERE listingId = ?";
     db.query(sqlSelect, BListingId, (err, resp) => {
         console.log("resp: " + resp);
+        response.send(resp);
+
         if (response.data != null) {
 
             const dates = resp.data[0].dates;

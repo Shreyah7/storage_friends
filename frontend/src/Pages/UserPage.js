@@ -134,7 +134,12 @@ function UserPage() {
   };
 
   const bookListing = (BUserId, BListingId) => {
-    Axios.post(`http://localhost:3002/api/get/book`,{BUserId:BUserId, BListingId:BListingId}).then((response) => {
+    Axios.post(`http://localhost:3002/api/get/book`,{BUserId:BUserId, BListingId:BListingId}).then((resp) => {
+
+      const dates = resp.data[0].dates;
+      const rent = resp.data[0].rent;
+      console.log("dates: " + dates);
+      console.log("rent: " + rent);
     })
   }
 
