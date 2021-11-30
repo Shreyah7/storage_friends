@@ -58,6 +58,34 @@ app.post("/api/get/user", (require, response) => {
     })
 });
 
+
+//book
+app.post("/api/get/book", (require, response) => {
+
+
+    const BUserId = require.body.BUserId;
+    const BListingId = require.body.BListingId;
+    console.log("BUserId: " + BUserId);
+    console.log("BListingId:" + BListingId);
+    
+    const sqlSelect = "SELECT Rent FROM Listings WHERE listingId = ?";
+    db.query(sqlSelect, BListingId, (err, resp) => {
+        console.log("resp: " + resp);
+        if (response.data != null) {
+
+            const dates = resp.data[0].dates;
+            const rent = resp.data[0].rent;
+            console.log("dates: " + dates);
+            console.log("rent: " + rent);
+            const sqlInsert = "INSERT INTO Bookings (UserId, ListingId, Dates, Rent) VALUES (?,?,?,?)";
+            db.query(sqlInsert, [BUserId, BListingId, dates, rent], (err1, resp1) => {
+               
+            })
+        }
+
+
+    })
+});
 app.post("/api/insert", (require, response) => {
     //const UserId = require.body.UserId;
     console.log(require.body);
@@ -76,14 +104,15 @@ app.post("/api/insert", (require, response) => {
     })
 });
 
-app.delete("/api/delete/:Email", (require, response) => {
-    const Email = require.params.Email;
+app.post("/api/delete/acct", (require, response) => {
+    const Email = require.body.Email;
+    const Password = require.body.Password;
     //const Password = require.body.Password;
     //console.log(Email)
     //console.log(Password)
 
-    const sqlDelete = "DELETE FROM Users WHERE Email = ?";
-    db.query(sqlDelete, Email, (err, result) => {
+    const sqlDelete = "DELETE FROM Users WHERE Email = ? and Password = ?";
+    db.query(sqlDelete, [Email, Password], (err, result) => {
         //console.log(result);
     })
 

@@ -3,7 +3,7 @@ import React, {useState, useEffect, Component} from "react";
 import Axios from 'axios';
 import UserPage from './UserPage';
 import { renderMatches } from 'react-router';
-import {BrowserRouter,Routes, Route, Link, useNavigate} from 'react-router-dom'
+import {BrowserRouter,Routes, Route, Link, useNavigate, withRouter} from 'react-router-dom'
 
 
 
@@ -19,12 +19,14 @@ next steps:
 
 
 function Login (props){
+
+  let Navigate = useNavigate();
+
   
     
 
   const [loginEmail, setEmail1] = useState('');
   const [Password, setPassword1] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState();
   const [UserId1, setUserID1] = useState('');
   const [FirstName, setFirstName] = useState('');
   const [LastName, setLastName] = useState('');
@@ -32,6 +34,8 @@ function Login (props){
   const [Phone, setPhone] = useState('');
   const [UserAddress, setUserAddress] = useState('');
   const [userList, setUserList] = useState([]);
+  const [loggedInUserId, setLoggedInUserId] = useState();
+
 
 
    // Create user to insert into database
@@ -72,8 +76,9 @@ function Login (props){
 
         if (response.data != null) {
             setUserID1(response.data[0].UserId);
+            setLoggedInUserId(UserId1);
             console.log("printing useris" + UserId1);
-           //props.Navigate.push(this.UserPage);
+           Navigate("userPage");
         } else {
         }
     }).catch((err) => {

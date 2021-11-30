@@ -2,6 +2,7 @@ import './UserPage.css';
 import React, {useState, useEffect, Component} from "react";
 import Axios from 'axios';
 import {Redirect, Route} from 'react-router-dom';
+import Login from './Login';
 
 
 
@@ -21,6 +22,8 @@ function UserPage() {
 
     const [loginEmail, setEmail1] = useState('');
     const [Password, setPassword] = useState('');
+    console.log("passy when set user: " + Password);
+
     const [isLoggedIn, setIsLoggedIn] = useState();
     const [UserId, setUserID] = useState('');
     const [FirstName, setFirstName] = useState('');
@@ -33,6 +36,8 @@ function UserPage() {
     const [Phone, setPhone] = useState('');
     const [UserAddress, setUserAddress] = useState('');
     const [userList, setUserList] = useState([]);
+    const [BUserId, setBUserID] = useState('');
+
 
 
 
@@ -100,15 +105,10 @@ function UserPage() {
 
   // DELETE email
   const deleteUser = (Email) => {
-    Axios.delete(`http://localhost:3002/api/delete/${Email}`);
+    Axios.post(`http://localhost:3002/api/delete/acct`, {Email:Email, Password:Password});
   };
 
-  const deleteUser2 = (Email) => {
-    Axios.delete(`http://localhost:3002/api/delete`, {
-      Email: Email,
-      Password: Password
-    });
-  };
+
 
   // SEARCH for listings in city x
   const getListingsInCity = (Address) => {
@@ -133,42 +133,17 @@ function UserPage() {
     })
   };
 
+  const bookListing = (BUserId, BListingId) => {
+    Axios.post(`http://localhost:3002/api/get/book`,{BUserId:BUserId, BListingId:BListingId}).then((response) => {
+    })
+  }
+
   
   return (
     <div className="App">
       <h1> StorageFriends </h1>
 
-      <div className="form">
-
-        
-        <h2> Delete User Account: </h2>
-        <div className="form">
-          <label> Enter Email </label>
-            <input type="text" name="Email" onChange={(e) => {
-              setEmail(e.target.value)
-          }}/>
-          <button onClick={() => { deleteUser(Email) }}> Delete</button>
-        </div>
-
-        <h2> Change Password: </h2>
-        <div className="form">
-          <label> Enter your email </label>
-            <input type="text" name="Email" onChange={(e) => {
-              setEmail(e.target.value)
-          }}/>
-          <label> Enter old password </label>
-            <input type="text" name="oldPassword" onChange={(e) => {
-              setPassword(e.target.value)
-          }}/>
-          <label> Enter new password </label>
-            <input type="text" name="updatePassword" onChange={(e) => {
-              setNewPassword(e.target.value)
-          }}/>
-          <button onClick={() => { updatePassword(Email) }}> Update</button>
-        </div>
-
-
-      </div>
+      
 
       <h1> </h1>
 
@@ -191,7 +166,7 @@ function UserPage() {
           <p> <b>Last Name:</b> {LastName} </p>
           <p> <b>Email:</b> {Email} </p>
           <p> <b>Phone:</b> {Phone} </p>
-          <p> <b>Address:</b> {UserAddress} </p>
+          <p> <b>City:</b> {UserAddress} </p>
           <p> <b>Password:</b> {Password} </p>
         </div>
 
@@ -272,13 +247,54 @@ function UserPage() {
             <h2>Listing {val.ListingId} </h2>
             <p class="rent">${val.Rent}/mo.</p>
             <p class="rent"> Space: {val.Space} ft</p>
-            <p><button>View Details</button></p>
+            <label> Enter your UserId to Book </label>
+            <input type="text" name="BUserId" onChange={(e) => {
+            setBUserID(e.target.value)
+        }}/>
+         <button onClick={() => { bookListing(BUserId, val.ListingId) }}> Book </button>
 
           
           </div>
         );
         ;
       })}
+
+      <div className="form">
+
+        
+        <h2> Delete User Account: </h2>
+        <div className="form">
+          <label> Enter Email </label>
+            <input type="text" name="Email" onChange={(e) => {
+              setEmail(e.target.value)
+          }}/>
+          <label> Enter Password </label>
+            <input type="text" name="Password" onChange={(e) => {
+              setPassword(e.target.value)
+          }}/>
+          <button onClick={() => { deleteUser(Email, Password) }}> Delete</button>
+        </div>
+
+        <h2> Change Password: </h2>
+        <div className="form">
+          <label> Enter your email </label>
+            <input type="text" name="Email" onChange={(e) => {
+              setEmail(e.target.value)
+          }}/>
+          <label> Enter old password </label>
+            <input type="text" name="oldPassword" onChange={(e) => {
+              setPassword(e.target.value)
+          }}/>
+          <label> Enter new password </label>
+            <input type="text" name="updatePassword" onChange={(e) => {
+              setNewPassword(e.target.value)
+          }}/>
+          <button onClick={() => { updatePassword(Email) }}> Update</button>
+        </div>
+
+
+      </div>
+          
 
     </div>
   );
